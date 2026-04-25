@@ -1,3 +1,8 @@
+const request = require('supertest');
+
+const app = require('../server');
+
+
 test('executes print("hello") successfully', async () => {
   const res = await request(app)
     .post('/api/run-python')
