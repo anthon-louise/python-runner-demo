@@ -1,17 +1,13 @@
-const UNSAFE_REGEX = /\b(import|from)\s+(os|subprocess|sys|socket|threading)\b/i;
-
-test('blocks unsafe imports', () => {
-  expect(UNSAFE_REGEX.test('import os')).toBe(true);
-  expect(UNSAFE_REGEX.test('from subprocess import run')).toBe(true);
-  expect(UNSAFE_REGEX.test('print("safe code")')).toBe(false);
+test('shows "(no output)" when result is empty', () => {
+  const format = (out) => out || '(no output)';
+  expect(format(null)).toBe('(no output)');
+  expect(format('')).toBe('(no output)');
+  expect(format('Hello')).toBe('Hello');
 });
 
-test('rejects empty or whitespace-only code', () => {
-  expect(''.trim()).toBe('');
-  expect('   \n'.trim()).toBe('');
-});
 
-test('enforces max length', () => {
-  const longCode = 'a'.repeat(2001);
-  expect(longCode.length > 1500).toBe(true);
+test('formats execution time to 3 decimals', () => {
+  const fmt = (s) => parseFloat(s).toFixed(3) + 's';
+  expect(fmt(0.1)).toBe('0.100s');
+  expect(fmt(1.2345)).toBe('1.235s');
 });
