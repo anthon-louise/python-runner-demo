@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐍</title>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: Consolas, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .terminal {
+    width: 100%;
+    max-width: 800px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+  }
+
+  .top-bar {
+    background: #21262d;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #30363d;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .red { background: #ff5f56; }
+  .yellow { background: #ffbd2e; }
+  .green { background: #27c93f; }
+
+  .title {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #8b949e;
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  textarea {
+    width: 100%;
+    height: 180px;
+    resize: none;
+    background: #0d1117;
+    color: #58a6ff;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 15px;
+    outline: none;
+  }
+
+  textarea:focus {
+    border-color: #58a6ff;
+  }
+
+  .actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  button {
+    background: #238636;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  button:hover {
+    background: #2ea043;
+  }
+
+  #status {
+    color: #8b949e;
+    font-size: 14px;
+  }
+
+  .output-box {
+    margin-top: 20px;
+    background: #010409;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 15px;
+    min-height: 140px;
+  }
+
+  .label {
+    color: #7ee787;
+    margin-bottom: 10px;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: #e6edf3;
+  }
+
+  .blink {
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="terminal">
+  
+  <div class="top-bar">
+    <div class="dot red"></div>
+    <div class="dot yellow"></div>
+    <div class="dot green"></div>
+    <div class="title">python-terminal</div>
+  </div>
+
+  <div class="content">
+    <form id="form">
+      <textarea id="code" placeholder="print('Danwen Gwapo')"></textarea>
+
+      <div class="actions">
+        <button type="submit">Run</button>
+        <p id="status">Idle</p>
+      </div>
+    </form>
+
+    <div class="output-box">
+      <div class="label">Output <span class="blink">_</span></div>
+      <pre id="result">(waiting for code...)</pre>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.getElementById('form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const status = document.getElementById('status');
+  const result = document.getElementById('result');
+  const code = document.getElementById('code').value;
+
+  status.textContent = 'Running...';
+  result.textContent = '';
+
+  try {
+    const res = await fetch('/api/run-python', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code })
+    });
+
+    const data = await res.json();
+
+    status.textContent = data.success ? 'Done' : 'Failed';
+    result.textContent = data.output || data.error || '(no output)';
+  } 
+  catch (err) {
+    status.textContent = 'Error';
+    result.textContent = err.message;
+  }
+});
+</script>
+
+</body>
+</html>
