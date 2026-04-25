@@ -1,20 +1,12 @@
-name: ✅ CI Test
+name: 🧪 Unit + Integration Tests
 
 on: [push]
 
 jobs:
-  test-api:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: npm ci
-      - name: Start server
-        run: node server.js &
-      - run: sleep 5
-      - name: Test endpoint
-        run: |
-          curl -f -X POST http://localhost:3000/api/run-python \
-            -H "Content-Type: application/json" \
-            -d '{"code":"print(\"CI works\")"}' \
-            | grep -q '"success":true'
-          echo "✅ Test passed!"
+      - name: Run Unit & Integration Tests
+        run: npm test

@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 
+
 app.use(express.json({ limit: '10kb' }));
 app.use(express.static('public'));
 
@@ -35,5 +36,11 @@ app.post('/api/run-python', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ http://localhost:${PORT}`));
+
+module.exports = app;
+
+
+if (require.main === module) {
+  const PORT = 3000;
+  app.listen(PORT, () => console.log(`✅ http://localhost:${PORT}`));
+}
