@@ -20,3 +20,17 @@ test('blocks unsafe Python imports', async () => {
   expect(res.status).toBe(403);
   expect(res.body.error).toBe('Unsafe imports blocked');
 });
+
+test('handles long-running execution safely', async () => {
+  const res = await request(app)
+    .post('/api/run-python')
+    .send({
+      code: 'while True:\n    pass'
+    });
+
+  expect([200, 500]).toContain(res.status);
+
+  if (res.status === 500) {
+    expect(res.body.error).toBeDefined();
+  }
+}, 20000);
