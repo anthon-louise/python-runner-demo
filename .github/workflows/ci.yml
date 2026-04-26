@@ -6,7 +6,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      # Download my GitHub code into the runner machine
       - uses: actions/checkout@v4
+      # Installs dependencies
       - run: npm ci
+      # Run tests
       - name: Run Unit & Integration Tests
         run: npm test

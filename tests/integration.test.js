@@ -1,12 +1,9 @@
 const request = require('supertest');
-
 const app = require('../server');
 
 
 test('executes print("hello") successfully', async () => {
-  const res = await request(app)
-    .post('/api/run-python')
-    .send({ code: 'print("hello")' });
+  const res = await request(app).post('/api/run-python').send({ code: 'print("hello")' });
   
   expect(res.status).toBe(200);
   expect(res.body.success).toBe(true);
@@ -15,9 +12,7 @@ test('executes print("hello") successfully', async () => {
 
 
 test('returns complete JSON response', async () => {
-  const res = await request(app)
-    .post('/api/run-python')
-    .send({ code: 'print("test")' });
+  const res = await request(app).post('/api/run-python').send({ code: 'print("test")' });
   
   expect(res.body).toHaveProperty('success');
   expect(res.body).toHaveProperty('output');

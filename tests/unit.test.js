@@ -1,13 +1,19 @@
-test('shows "(no output)" when result is empty', () => {
-  const format = (out) => out || '(no output)';
-  expect(format(null)).toBe('(no output)');
-  expect(format('')).toBe('(no output)');
-  expect(format('Hello')).toBe('Hello');
+test('rejects empty code input', async () => {
+  const res = await request(app)
+    .post('/api/run-python')
+    .send({ code: '' });
+
+  expect(res.status).toBe(400);
+  expect(res.body.error).toBe('Code is required');
 });
 
+test('blocks unsafe Python imports', async () => {
+  const res = await request(app)
+    .post('/api/run-python')
+    .send({
+      code: 'import os\nprint("hack")'
+    });
 
-test('formats execution time to 3 decimals', () => {
-  const fmt = (s) => parseFloat(s).toFixed(3) + 's';
-  expect(fmt(0.1)).toBe('0.100s');
-  expect(fmt(1.2346)).toBe('1.235s'); 
+  expect(res.status).toBe(403);
+  expect(res.body.error).toBe('Unsafe imports blocked');
 });
