@@ -11,9 +11,7 @@ app.post('/api/run-python', async (req, res) => {
   const { code } = req.body;
 
   if (!code || !code.trim()) return res.status(400).json({ error: 'Code is required' });
-
   if (code.length > 1500) return res.status(400).json({ error: 'Code too long' });
-  
   if (/\b(import|from)\s+(os|subprocess|sys|socket|threading)\b/i.test(code)) {
     return res.status(403).json({ error: 'Unsafe imports blocked' });
   }
